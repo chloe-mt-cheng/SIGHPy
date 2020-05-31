@@ -1,0 +1,11 @@
+__pycache__
+.DS_Store
+sighPy/__pycache__
+build
+*.db
+__MACOSX
+data_files
+*.exe
+*.png
+*.sql
+*.json

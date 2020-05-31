@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>SIGHPy Online</title>
+  </head>
+  <body>
+    {% extends "template.html" %}
+    {% block content %}
+    <h2> Welcome to SIGHPy </h2>
+    <h3> Here are some of the Data Centre locations that we're tracking:</h3>
+    {%for data in home_data%}
+      <ul>{{data[0]}}</ul>
+    {%endfor%}
+    {% endblock %}
+  </body>
+</html>

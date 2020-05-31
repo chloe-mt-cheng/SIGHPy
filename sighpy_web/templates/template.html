@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="utf-8">
+  <title>Parent Template</title>
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles/template.css') }}">
+</head>
+<body>
+   <header>
+     <div class="container">
+       <h1 class="logo">SIGHPy</h1>
+       <strong><nav>
+         <table>
+           <tr>
+             <td><a href="{{ url_for('home') }}">Home</a></td>
+             <td><a href="{{ url_for('calculator') }}">Calculator</a></td>
+             <td><a href="{{ url_for('data') }}">Data</a></td>
+             <td><a href="{{ url_for('about') }}">About</a></td>
+          </tr>
+        </table>
+       </nav></strong>
+     </div>
+   </header>
+
+   {% block content %}
+   {% endblock %}
+
+</body>
+</html>
