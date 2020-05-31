@@ -1,7 +1,44 @@
 table {
   border-spoacing: 10px;
+  font-family: sans-serif;
 }
 
 h1 {
   font-size: 25px;
+}
+
+.inputs {
+  padding: 2px;
+}
+
+header {
+  background: url(sighpy.png);
+  background-position: 100% 45%;
+  font-family: sans-serif;
+  font-weight: bold;
+  height: 125px;
+}
+
+h1 {
+  font-family: sans-serif;
+}
+
+h2 {
+  font-family: sans-serif;
+}
+
+h3 {
+  font-family: sans-serif;
+}
+
+p {
+  font-family: sans-serif;
+}
+
+ul {
+  font-family: sans-serif;
+}
+
+label {
+  font-family: sans-serif;
 }

@@ -7,8 +7,20 @@
   <body>
     {% extends "template.html" %}
     {% block content %}
-    <h1> SIGHPy Calculator </h1>
-    <h2> Calculate some stuff. </h2>
+    <h2> SIGHPy Calculator </h2>
+    <form method="POST">
+      <input name="text">
+      <input type="submit">
+    </form>
+    {% if data %}
+      <table>
+      {% for d in data %}
+        <tr><td>{{d}}</td></tr>
+      {% endfor %}
+      </table>
+    {% else %}
+      <h3> Calculate some stuff. </h3>
+    {% endif %}
     {% endblock %}
   </body>
 </html>

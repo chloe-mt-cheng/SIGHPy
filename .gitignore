@@ -6,6 +6,7 @@ build
 __MACOSX
 data_files
 *.exe
-*.png
+infra_diagram.png
+test_plot.png
 *.sql
 *.json

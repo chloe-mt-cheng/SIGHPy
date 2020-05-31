@@ -9,6 +9,9 @@
     {% block content %}
     <h2> SIGHPy stands for Sometimes It Gets Hot Py, a riff on the subject of our hack: data centre emissions.</h2>
     <p> Built for NASA's COVID19 Challenge, we are looking to track and better understand the impact that COVID19 has had on data center emissions, and beyond that provide better context and scale to the impact of computational power on the environment at a more granular level.</p>
+    <p> SIGHPy is built on Flask, SQLAlchemy, and a module (also named SIGHPy) that supports easy movement of common environmental/satellite data formats such as HDF5s and GEOTIFFS straight to a database (which is also built on Flask).</p>
+    <p> The Home page is meant for visualization of data center locations and a cursory glance at their emissions over time at a DC level, where as the Data page is for more specific emissions tracking. This includes using it to track the emissions of the nearest DCs to the user, which we believe acts as good relative proxy to global emissions changes pre and post COVID19.</p>
+    <p> For more in depth/focused analysis, we recommend looking at common areas where large corporate DCs are located, which can be found on most IaaS vendor websites (e.g. AWS, IBM, GCP).</p>
     {% endblock %}
   </body>
 </html>

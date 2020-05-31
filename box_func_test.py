@@ -2,7 +2,7 @@ from datetime import datetime
 import pandas as pd
 import os
 
-dir_path = "C:\\Users\\Colin Yip\\Documents\\SpaceApps\\2019_csv\\SurfSkinTemp"
+dir_path = "\\USER\\PATH\\TO\\FILE\\DIR"
 file_list = os.listdir(dir_path)
 
 in_dfs = []
@@ -22,7 +22,7 @@ def lat_switch_func(lat_list):
     prev_val = None
     out_list = []
     for j in range(lat_list_len):
-        curr_val = lat_list[j]
+        curr_val = lat_list.iloc[j]
         if j == 0:
             prev_val = curr_val
             continue
@@ -99,6 +99,8 @@ def box_create(df, lat_col_name, long_col_name, value_col_names, col_names):
         append_list = [up_left_lat, up_left_long, up_right_lat, up_right_long,
                        down_left_lat, down_left_long, down_right_lat, down_right_long]
         output_boxes[i] = append_list
+        if i % 200000 == 0:
+            print(i)
     box_frame = pd.DataFrame.from_dict(output_boxes, orient='index')
     box_frame.columns = col_names
     box_frame['val_average'] = [-9999] * df.shape[0]
@@ -114,22 +116,15 @@ def box_create(df, lat_col_name, long_col_name, value_col_names, col_names):
 box_dfs = []
 index = 0
 
-for df in in_dfs:
-    lat_param = "location/Data Fields/Latitude"
-    long_param = "location/Data Fields/Longitude"
-    temp_params = ["ascending/Data Fields/SurfSkinTemp_A","descending/Data Fields/SurfSkinTemp_D"]
+for df in in_dfs[1:]:
+    lat_param = "latitude"
+    long_param = "longitude"
+    temp_params = ["value1", "value2"]
     box_dfs.append(box_create(df, lat_col_name=lat_param,
                               long_col_name=long_param,
                               value_col_names=temp_params,
                               col_names=col_names))
-    # except KeyError:
-    #     lat_param = "Data/geolocation/latitude"
-    #     long_param = "Data/geolocation/longitude"
-    #     box_dfs.append(box_create(df, lat_col_name=lat_param,
-    #                           long_col_name=long_param,
-    #                           value_col_names=["Data/latticeInformation/XCO2Average"],
-    #                           col_names=col_names))
-    print(index)
     index += 1
 
 final_temp_box = pd.concat(box_dfs).reset_index().drop('index', axis=1)
+final_temp_box.to_csv("file.csv", index=False)

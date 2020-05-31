@@ -7,8 +7,97 @@
   <body>
     {% extends "template.html" %}
     {% block content %}
-    <h1> SIGHPy Data </h1>
-    <h2> Poke through database stuff. </h2>
+    <h2> SIGHPy Data </h2>
+    <form method="POST">
+      <div class="inputs">
+        <span style="display:inline-block">
+          <label for="location" style="display:block">Location</label>
+          <input type="text" placeholder="Location" name="location">
+        </span>
+        <span style="display:inline-block">
+          <label for="radius" style="display:block">Search Radius</label>
+          <input type="number" placeholder="Area (KM)" name="radius">
+        </span>
+      </div>
+      <div class="inputs">
+        <span style="display:inline-block">
+          <label for="sum_agg" style="display:block">Search Start</label>
+          <input type="date" placeholder="Start Date" name="date_dt1">
+        </span>
+        <span style="display:inline-block">
+          <label for="sum_agg" style="display:block">Search End</label>
+          <input type="date" placeholder="End Date" name="date_dt2">
+        </span>
+        <span style="display:inline-block">
+          <label for="sum_agg" style="display:block">Daily Usage Time (Hours)</label>
+          <input type="number" value="24" name="use_hours">
+        </span>
+        <span style="display:inline-block">
+          <label for="date_grain" style="display:block">Search Grain</label>
+          <select name="date_grain">
+            <option value="day">Daily</option>
+            <option value="week">Weekly</option>
+            <option value="month">Monthly</option>
+            <option value="year">Yearly</option>
+          </select>
+        </span>
+      </div>
+      <div class="inputs">
+        <input type="checkbox" name="sum_agg">
+        <label for="sum_agg">CO2 Sum</label>
+        <input type="checkbox" name="avg_agg">
+        <label for="avg_agg">CO2 Average</label>
+        <input type="checkbox" name="time_series_bool">
+        <label for="time_series_bool">Time Series (Default DC Aggregation)</label>
+      </div>
+      <div class="inputs">
+        <input type="submit">
+        <input type="reset">
+      </div>
+    </form>
+    {% if data==0 %}
+      <h3> Address search failed. Please try again or verify the address provided. </h3>
+    {% elif data==1 %}
+      <h3> Please submit a valid date combination and/or an area (of at least 0KM). </h3>
+    {% elif data==2 %}
+      <h3> No results found for that slice. </h3>
+    {% elif data==3 %}
+      <h3> Please select either SUM or AVERAGE. </h3>
+    {% elif data %}
+      <table>
+      <tr>
+        <td style="font-weight:bold">Searched Location</td>
+        <td style="font-weight:bold">Radius (KM)</td>
+        <td style="font-weight:bold">Hours/Day of Use</td>
+      </tr>
+      <tr>
+        {% for sd in search_data %}
+          <td>{{sd}}</td>
+        {% endfor %}
+      </tr>
+      <tr><td style="height:12px"></td></tr>
+      <tr>
+        {% if time_bool %}
+          <td style="font-weight:bold">Time Slice</td>
+          <td style="font-weight:bold">CO2 Emissions (ppmv)</td>
+          <td style="font-weight:bold">Skin Temperature (K)</td>
+        {% else %}
+          <td style="font-weight:bold">Data Center Location</td>
+          <td style="font-weight:bold">CO2 Emissions (ppmv)</td>
+          <td style="font-weight:bold">Skin Temperature (K)</td>
+        {% endif %}
+      </tr>
+      {% for d in data %}
+        <tr>
+        {% for dp in d %}
+          <td>{{dp}}</td>
+        {% endfor %}
+        </tr>
+      {% endfor %}
+      </table>
+    {% else %}
+      <h3> Poke through database stuff. </h3>
+    {% endif %}
     {% endblock %}
   </body>
 </html>
