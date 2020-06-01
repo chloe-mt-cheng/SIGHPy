@@ -3,15 +3,35 @@
   <head>
     <meta charset="utf-8">
     <title>SIGHPy Online</title>
+    <style>#map { height: 100%; width: 100%; }</style>
   </head>
   <body>
     {% extends "template.html" %}
     {% block content %}
     <h2> Welcome to SIGHPy </h2>
-    <h3> Here are some of the Data Centre locations that we're tracking:</h3>
-    {%for data in home_data%}
-      <ul>{{data[0]}}</ul>
-    {% endfor %}
+    <table>
+      <tr>
+          <td><h3> Here are some of the Data Centre locations that we're tracking:</h3></td>
+          <!-- <form method="POST">
+            <td style="padding-left: 100px">
+              <label for="location">Where are you?</label>
+              <input type="text" placeholder="Location" name="location">
+            </td>
+            <td style="padding-bottom: 20px">
+              <label for="date_dt1" style="display:block">Start Date</label>
+              <input type="date" placeholder="Start Date" name="date_dt1">
+            </td>
+            <td style="padding-bottom: 20px">
+              <label for="date_dt2" style="display:block">End Date</label>
+              <input type="date" placeholder="End Date" name="date_dt2">
+            </td>
+            <td class="inputs">
+              <input type="submit">
+            </td>
+          </form> -->
+      </tr>
+    <table>
+    {{homemap.html}}{{homemap.js}}
     {% endblock %}
   </body>
 </html>

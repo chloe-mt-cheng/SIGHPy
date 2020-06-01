@@ -65,35 +65,35 @@
       <h3> Please select either SUM or AVERAGE. </h3>
     {% elif data %}
       <table>
-      <tr>
-        <td style="font-weight:bold">Searched Location</td>
-        <td style="font-weight:bold">Radius (KM)</td>
-        <td style="font-weight:bold">Hours/Day of Use</td>
-      </tr>
-      <tr>
-        {% for sd in search_data %}
-          <td>{{sd}}</td>
-        {% endfor %}
-      </tr>
-      <tr><td style="height:12px"></td></tr>
-      <tr>
-        {% if time_bool %}
-          <td style="font-weight:bold">Time Slice</td>
-          <td style="font-weight:bold">CO2 Emissions (ppmv)</td>
-          <td style="font-weight:bold">Skin Temperature (K)</td>
-        {% else %}
-          <td style="font-weight:bold">Data Center Location</td>
-          <td style="font-weight:bold">CO2 Emissions (ppmv)</td>
-          <td style="font-weight:bold">Skin Temperature (K)</td>
-        {% endif %}
-      </tr>
-      {% for d in data %}
         <tr>
-        {% for dp in d %}
-          <td>{{dp}}</td>
-        {% endfor %}
+          <td style="font-weight:bold">Searched Location</td>
+          <td style="font-weight:bold">Radius (KM)</td>
+          <td style="font-weight:bold">Hours/Day of Use</td>
         </tr>
-      {% endfor %}
+        <tr>
+          {% for sd in search_data %}
+            <td>{{sd}}</td>
+          {% endfor %}
+        </tr>
+        <tr><td style="height:12px"></td></tr>
+        <tr>
+          {% if time_bool %}
+            <td style="font-weight:bold">Time Slice</td>
+            <td style="font-weight:bold">CO2 Emissions (ppmv)</td>
+            <td style="font-weight:bold">Skin Temperature (K)</td>
+          {% else %}
+            <td style="font-weight:bold">Data Center Location</td>
+            <td style="font-weight:bold">CO2 Emissions (ppmv)</td>
+            <td style="font-weight:bold">Skin Temperature (K)</td>
+          {% endif %}
+        </tr>
+        {% for d in data %}
+          <tr>
+          {% for dp in d %}
+            <td>{{dp}}</td>
+          {% endfor %}
+          </tr>
+        {% endfor %}
       </table>
     {% else %}
       <h3> Poke through database stuff. </h3>

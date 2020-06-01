@@ -1,5 +1,10 @@
 from math import radians, cos, sin, asin, sqrt, ceil
 from datetime import datetime
+from matplotlib.figure import Figure
+import numpy as np
+import base64
+from io import BytesIO
+
 
 r = 6371
 
@@ -46,3 +51,47 @@ def tuple_to_datetime(date_tuple, grain):
 
 def two_item_mean(num1, num2):
     return (num1+num2)/2
+
+
+def marker_maker(lat_long, infobox, icon="http://maps.google.com/mapfiles/ms/icons/red-dot.png"):
+    out_dict = {'icon': icon,
+                'lat': lat_long[0],
+                'lng': lat_long[1],
+                'infobox': infobox}
+    return out_dict
+
+
+def marker_chart(emit_data):
+    emissions = []
+    dates = []
+    for i in range(len(emit_data)):
+        emissions.append(emit_data[i][0])
+        dates.append(emit_data[i][1])
+    emissions = np.array(emissions)
+    dates = np.array(dates)
+    emission_trends = emissions[emissions != 0]
+    date_trends = dates[emissions != 0]
+    new_dates = []
+    for i in dates:
+        new_dates.append(i.strftime('%b %d %Y'))
+    new_dates = np.array(new_dates)
+    covid_index = int(np.argwhere(new_dates == 'Mar 01 2020').flatten())
+    pre_covid_dates = date_trends[0:covid_index]
+    covid_dates = date_trends[covid_index:]
+    pre_covid_emissions = emission_trends[0:covid_index]
+    covid_emissions = emission_trends[covid_index:]
+    print("plotting")
+    fig = Figure(figsize=(6,4))
+    ax = fig.subplots()
+    ax.plot(pre_covid_dates, pre_covid_emissions, marker='.', markersize=7, color='b', label='Pre-COVID-19')
+    ax.plot(covid_dates, covid_emissions, marker='.', markersize=7, color='r', label='After Social Distancing')
+    # ax.xlabel('Date', fontsize=15)
+    # ax.ylabel('Average $CO_2$ (ppmv)', fontsize=15)
+    # ax.xticks(fontsize=12)
+    # ax.yticks(fontsize=12)
+    # ax.grid()
+    # fig.legend()
+    buf = BytesIO()
+    fig.savefig(buf, format="png")
+    data = base64.b64encode(buf.getbuffer()).decode("ascii")
+    return f"<img src='data:image/png;base64,{data}'/>"

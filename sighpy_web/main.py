@@ -1,13 +1,18 @@
 from flask import Flask, request, render_template
 from sqlalchemy import create_engine
+from flask_googlemaps import GoogleMaps, Map
 from geopy.geocoders import Nominatim
 from datetime import datetime
-from calculations import distance_km_func, rough_area, tuple_to_datetime, two_item_mean
+from calculations import distance_km_func, rough_area, tuple_to_datetime, two_item_mean, marker_maker, marker_chart
 from operator import add
+import matplotlib.pyplot as plt
+
 
 app = Flask(__name__)
+app.config['GOOGLEMAPS_KEY'] = "AIzaSyC06Ff3dvkoc6-d20qa0AvUxiSa35yIsP0"
 
 engine = create_engine('mysql+pymysql://colin:colinpass1@127.0.0.1/sighpy')
+GoogleMaps(app)
 
 
 def engine_txn(dbengine, query):
@@ -19,10 +24,84 @@ def engine_txn(dbengine, query):
 
 @app.route("/")
 def home():
-    home_data = engine_txn(engine, "SELECT address FROM dc_site_location ORDER BY RAND() LIMIT 10")
-    home_data = home_data[1:]
+    home_query_string = """SELECT address, latitude, longitude
+    FROM dc_site_location
+    ORDER BY RAND() LIMIT 15"""
+    co2_query_form = """SELECT val_average, date_dt FROM
+    jaxa_l3_co2_daily_box
+    WHERE {lat} BETWEEN down_left_lat AND up_left_lat
+    AND {long} BETWEEN up_left_long and up_right_long
+    AND date_dt BETWEEN '{date1}' AND '{date2}'"""
+    home_data = engine_txn(engine, home_query_string)
+    home_markers = [data[1:3] for data in home_data]
+    start_date = "2019-04-01"
+    end_date = "2020-04-01"
+    home_data = engine_txn(engine, home_query_string)
+    home_markers = [data[1:3] for data in home_data]
+    home_addresses = [data[0] for data in home_data]
+    home_info_markers = []
+    info_marker_form = "<p style='font-size:22'>CO2 Emissions for Data Center at {dc}:</p>"
+    for mark, address in zip(home_markers, home_addresses):
+        mark_lat = mark[0]
+        mark_long = mark[1]
+        print(address, mark)
+        address_html_str = info_marker_form.format(dc=address)
+        query_string = co2_query_form.format(lat=mark_lat, long=mark_long,
+                                             date1=start_date, date2=end_date)
+        query_data = engine_txn(engine, query_string)
+        plot_html_str = marker_chart(query_data)
+        home_info_markers.append(address_html_str+plot_html_str)
+    home_marker_param = list(map(marker_maker, home_markers, home_info_markers))
+    homemap = Map(
+        identifier="homemap",
+        varname="homemap",
+        lat=40,
+        lng=-65,
+        zoom=4,
+        markers=home_marker_param,
+        style="aligh:center;height:650px;width:100%;margin:0;")
+    return render_template("home.html", homemap=homemap)
 
-    return render_template("home.html", home_data=home_data)
+
+@app.route("/", methods=['POST'])
+def home_post():
+    home_query_string = """SELECT address, latitude, longitude
+    FROM dc_site_location
+    ORDER BY RAND() LIMIT 15"""
+    co2_query_form = """SELECT val_average, date_dt FROM
+    jaxa_l3_co2_daily_box
+    WHERE {lat} BETWEEN down_left_lat AND up_left_lat
+    AND {long} BETWEEN up_left_long and up_right_long
+    AND date_dt BETWEEN '{date1}' AND '{date2}'"""
+    # geolocator = Nominatim(user_agent="sighpy_app")
+    # user_location = request.form['location']
+    # start_date = request.form['date_dt1']
+    # end_date = request.form['date_dt2']
+    # location_resp = geolocator.geocode(user_location)
+    # resp_lat = location_resp.latitude
+    # resp_long = location_resp.longitude
+    start_date = "2019-09-01"
+    end_date = "2020-04-01"
+    home_data = engine_txn(engine, home_query_string)
+    home_markers = [data[1:3] for data in home_data]
+    for mark in home_markers:
+        mark_lat = mark[0]
+        mark_long = mark[1]
+        query_string = co2_query_form.format(lat=mark_lat, long=mark_long,
+                                             date1=start_date, date2=end_date)
+        query_data = engine_txn(engine, query_string)
+        marker_chart(query_data)
+    home_info_markers = [data[0] for data in home_data]
+    home_marker_param = list(map(marker_maker, home_markers, home_info_markers))
+    homemap = Map(
+        identifier="homemap",
+        varname="homemap",
+        lat=40,
+        lng=-65,
+        zoom=4,
+        markers=home_marker_param,
+        style="aligh:center;height:650px;width:100%;margin:0;")
+    return render_template("home.html", homemap=homemap)
 
 
 @app.route("/data")
