@@ -9,9 +9,9 @@ import matplotlib.pyplot as plt
 
 
 app = Flask(__name__)
-app.config['GOOGLEMAPS_KEY'] = "AIzaSyC06Ff3dvkoc6-d20qa0AvUxiSa35yIsP0"
+app.config['GOOGLEMAPS_KEY'] = "GMAPSAPIKEY"
 
-engine = create_engine('mysql+pymysql://colin:colinpass1@127.0.0.1/sighpy')
+engine = create_engine('mysql+pymysql://USER:PASS@127.0.0.1/sighpy')
 GoogleMaps(app)
 
 
